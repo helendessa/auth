@@ -1,5 +1,5 @@
 import { mailtrapClient, sender } from './mailtrap.config.js';
-import { VERIFICATION_EMAIL_TEMPLATE, WELCOME_EMAIL_TEMPLATE, PASSWORD_RESET_REQUEST_TEMPLATE } from './emailTemplates.js';
+import { VERIFICATION_EMAIL_TEMPLATE, WELCOME_EMAIL_TEMPLATE, PASSWORD_RESET_REQUEST_TEMPLATE, PASSWORD_RESET_SUCCESS_TEMPLATE } from './emailTemplates.js';
 
 export const sendVerificationEmail = async (email, verificationToken) => {
     const recipient = [{ email }];
@@ -64,5 +64,27 @@ export const sendPasswordResetEmail = async (email, resetURL) => {
     } catch (error) {
         console.log("Erro ao enviar e-mail de redefinição de senha: ", error.message);
         throw new Error(`Erro ao enviar e-mail de redefinição de senha: ${error.message}`);
+    }
+};
+
+export const sendResetSuccessEmail = async (email) => {
+    const recipient = [{ email }];
+
+    try {
+        const response = await mailtrapClient.send({
+            from: {
+                email: sender.email,
+                name: sender.name
+            },
+            to: recipient,
+            subject: "Redefinição de senha bem-sucedida",
+            html: PASSWORD_RESET_SUCCESS_TEMPLATE(),
+            category: "Password Reset Success Email"
+        });
+
+        console.log("Email de redefinição de senha bem-sucedida enviado com sucesso: ", response);
+    } catch (error) {
+        console.log("Erro ao enviar e-mail de redefinição de senha bem-sucedida: ", error.message);
+        throw new Error(`Erro ao enviar e-mail de redefinição de senha bem-sucedida: ${error.message}`);
     }
 };

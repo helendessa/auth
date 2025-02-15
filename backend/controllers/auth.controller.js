@@ -2,7 +2,7 @@ import { User } from "../models/user.model.js";
 import bcryptjs from "bcryptjs";
 import crypto from "crypto";
 import generateTokenAndSetCookie from "../utils/generateTokenAndSetCookie.js";
-import { sendVerificationEmail, sendWelcomeEmail, sendPasswordResetEmail } from "../mailtrap/emails.js";
+import { sendVerificationEmail, sendWelcomeEmail, sendPasswordResetEmail, sendResetSuccessEmail } from "../mailtrap/emails.js";
 import { send } from "process";
 
 export const signup = async (req, res) => {
@@ -143,5 +143,37 @@ export const forgotPassword = async (req, res) => {
     } catch (error) {
         console.log("Erro ao enviar e-mail de redefinição de senha: ", error.message);
         res.status(500).json({ success: false, message: error.message });
+    }
+};
+
+export const resetPassword = async (req, res) => {
+    try {
+        const { token } = req.params;
+        const { password } = req.body;
+        
+        const user = await User.findOne({
+            resetPasswordToken: token,
+            resetPasswordExpiresAt: { $gt: Date.now() }
+        });
+
+        if(!user) {
+            return res.status(400).json({ success: false, message: "Token inválido ou expirado!" });
+        }
+
+        const hashedPassword = await bcryptjs.hash(password, 10);
+
+        user.password = hashedPassword;
+        user.resetPasswordToken = undefined;
+        user.resetPasswordExpiresAt = undefined;
+
+        await user.save();
+
+        await sendResetSuccessEmail(user.email);
+
+        res.status(200).json({ success: true, message: "Senha redefinida com sucesso!" });
+
+    } catch (error) {
+        console.log("Erro ao redefinir senha: ", error.message);
+        res.status(400).json({ success: false, message: error.message });
     }
 };
