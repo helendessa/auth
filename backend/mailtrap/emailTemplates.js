@@ -28,6 +28,31 @@ export const VERIFICATION_EMAIL_TEMPLATE = (verificationCode) => `
 </html>
 `;
 
+export const WELCOME_EMAIL_TEMPLATE = (name) => `
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bem-vindo ao PetPet</title>
+</head>
+<body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;">
+  <div style="background: linear-gradient(to right, #4CAF50, #45a049); padding: 20px; text-align: center;">
+    <h1 style="color: white; margin: 0;">Bem-vindo ao PetPet, ${name}!</h1>
+  </div>
+  <div style="background-color: #f9f9f9; padding: 20px; border-radius: 0 0 5px 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+    <p>Olá ${name},</p>
+    <p>Estamos muito felizes em tê-lo conosco! Esperamos que você aproveite todos os benefícios de ser um membro do PetPet.</p>
+    <p>Se você tiver alguma dúvida ou precisar de ajuda, não hesite em entrar em contato conosco.</p>
+    <p>Atenciosamente,<br>Equipe PetPet</p>
+  </div>
+  <div style="text-align: center; margin-top: 20px; color: #888; font-size: 0.8em;">
+    <p>Esta é uma mensagem automática, por favor, não responda este e-mail.</p>
+  </div>
+</body>
+</html>
+`;
+
 export const PASSWORD_RESET_SUCCESS_TEMPLATE = () => `
 <!DOCTYPE html>
 <html lang="pt-BR">
