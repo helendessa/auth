@@ -1,14 +1,16 @@
 import { useState } from 'react'
 import Input from '../components/Input';
-import { User, Mail, Lock } from 'lucide-react';
+import { User, Mail, Lock, EyeOff, Eye } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
+import PasswordStrengthMeter from '../components/PasswordStrengthMeter';
 
 const SignUpPage = () => {
 
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleSignUp = (e) => {
     e.preventDefault();
@@ -40,12 +42,16 @@ const SignUpPage = () => {
             />
             <Input 
               icon={Lock}
-              type="password"
+              type={showPassword ? 'text' : 'password'}
               placeholder="Senha"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
+              toggleIcon={showPassword ? EyeOff : Eye}
+              onToggle={() => setShowPassword(!showPassword)}
             />
-            {/* Password strength meter */}
+
+            <PasswordStrengthMeter password={password} />
+            
             <motion.button
             className="mt-5 w-full py-3 px-4 bg-[#4764fd] text-white rounded-lg font-bold
             shadow-lg hover:shadow-xl transition duration-200"
