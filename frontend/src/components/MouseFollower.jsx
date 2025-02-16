@@ -1,11 +1,17 @@
 import { useState, useEffect } from 'react';
 
 const MouseFollower = ({ src, size }) => {
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const [positions, setPositions] = useState([]);
 
   useEffect(() => {
     const handleMouseMove = (event) => {
-      setMousePosition({ x: event.clientX, y: event.clientY });
+      setPositions((prevPositions) => {
+        const newPositions = [...prevPositions, { x: event.clientX, y: event.clientY }];
+        if (newPositions.length > 5) {
+          newPositions.shift();
+        }
+        return newPositions;
+      });
     };
 
     window.addEventListener("mousemove", handleMouseMove);
@@ -16,12 +22,23 @@ const MouseFollower = ({ src, size }) => {
   }, []);
 
   return (
-    <img
-      src={src}
-      className={`absolute ${size} opacity-80`}
-      style={{ top: mousePosition.y, left: mousePosition.x, transform: 'translate(-50%, -50%) rotate(45deg)' }}
-      aria-hidden="true"
-    />
+    <>
+      {positions.map((position, index) => (
+        <img
+          key={index}
+          src={src}
+          className={`absolute ${size}`}
+          style={{ 
+            top: position.y, 
+            left: position.x, 
+            transform: 'translate(-50%, -50%) rotate(45deg)', 
+            opacity: 1 - (index * 0.2), // Gradual opacity for trailing effect
+            zIndex: 40,
+          }}
+          aria-hidden="true"
+        />
+      ))}
+    </>
   );
 };
 
