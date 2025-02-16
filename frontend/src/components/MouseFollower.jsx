@@ -6,7 +6,7 @@ const MouseFollower = ({ src, size }) => {
   useEffect(() => {
     const handleMouseMove = (event) => {
       setPositions((prevPositions) => {
-        const newPositions = [...prevPositions, { x: event.clientX, y: event.clientY }];
+        const newPositions = [...prevPositions, { x: event.clientX - 20, y: event.clientY + 20 }];
         if (newPositions.length > 5) {
           newPositions.shift();
         }
@@ -33,7 +33,7 @@ const MouseFollower = ({ src, size }) => {
             left: position.x, 
             transform: 'translate(-50%, -50%) rotate(45deg)', 
             opacity: 1 - (index * 0.2), // Gradual opacity for trailing effect
-            zIndex: 40,
+            zIndex: 1, // Ajuste o z-index para um valor mais baixo
           }}
           aria-hidden="true"
         />
