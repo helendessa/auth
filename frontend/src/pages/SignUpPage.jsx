@@ -1,9 +1,11 @@
 import { useState } from 'react'
 import Input from '../components/Input';
-import { User, Mail, Lock, EyeOff, Eye } from 'lucide-react';
+import { User, Mail, Lock, EyeOff, Eye, Loader } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import PasswordStrengthMeter from '../components/PasswordStrengthMeter';
+import { useAuthStore } from '../store/authStore';
+import { useNavigate } from 'react-router-dom';
 
 const SignUpPage = () => {
 
@@ -11,9 +13,19 @@ const SignUpPage = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const navigate = useNavigate();
 
-  const handleSignUp = (e) => {
+  const { signup, error, isLoading } = useAuthStore();
+
+  const handleSignUp = async(e) => {
     e.preventDefault();
+
+    try {
+      await signup(email, password, name);
+      navigate('/verify-email');
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
@@ -50,6 +62,7 @@ const SignUpPage = () => {
               onToggle={() => setShowPassword(!showPassword)}
             />
 
+            {error && <p className="text-red-500 text-sm text-center">{error}</p>}
             <PasswordStrengthMeter password={password} />
             
             <motion.button
@@ -58,8 +71,9 @@ const SignUpPage = () => {
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             type="submit"
+            disabled={isLoading}
             >
-            Cadastrar
+            {isLoading ? <Loader className="animate-spin mx-auto" size={24}/> : 'Cadastrar'}
             </motion.button>
           </form>
         </div>
