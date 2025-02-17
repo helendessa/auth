@@ -1,12 +1,44 @@
 import { useState, useEffect } from "react";
-import { Route, Routes } from "react-router-dom";
+import { Navigate, Route, Routes } from "react-router-dom";
 import FloatingShape from "./components/FloatingShape";
 import MouseFollower from "./components/MouseFollower";
 import LoginPage from "./pages/LoginPage";
 import SignUpPage from "./pages/SignUpPage";
 import EmailVerificationPage from "./pages/EmailVerificationPage";
+import { useAuthStore } from "./store/authStore";
+
+const ProtectedRoute = ({ children }) => {
+  const { isAuthenticated, user } = useAuthStore();
+
+  if (!isAuthenticated || !user) {
+    return <Navigate to="/login" replace />;
+  }
+
+  return children;
+};
+
+const RedirectAuthenticatedUser = ({ children }) => {
+  const { isAuthenticated, user } = useAuthStore();
+
+  if (isAuthenticated) {
+    return <Navigate to="/" replace />;
+  }
+
+  if (!user.isVerified) {
+    return <Navigate to="/verify-email" replace />;
+  }
+
+  return children;
+};
 
 function App() {
+  const { isCheckingAuth, checkAuth, isAuthenticated, user } = useAuthStore();
+
+  useEffect(() => {
+    checkAuth();
+  }, [checkAuth]);
+
+  console.log(isCheckingAuth, isAuthenticated, user);
   return (
     <div className='min-h-screen bg-[#fbe343] flex items-center justify-center relative overflow-hidden'>
       <FloatingShape 
@@ -61,8 +93,14 @@ function App() {
 
       <Routes>
         <Route path='/' element={"Home"} />
-        <Route path='/signup' element={<SignUpPage />} />
-        <Route path='/login' element={<LoginPage />} />
+        <Route path='/signup' element={
+          <RedirectAuthenticatedUser>
+            <SignUpPage />
+          </RedirectAuthenticatedUser>
+        } />
+        <Route path='/login' element={<RedirectAuthenticatedUser>
+          <LoginPage />
+        </RedirectAuthenticatedUser>} />
         <Route path='/verify-email' element={<EmailVerificationPage />} />
       </Routes>
     </div>
