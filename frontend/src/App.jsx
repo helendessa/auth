@@ -6,6 +6,8 @@ import LoginPage from "./pages/LoginPage";
 import SignUpPage from "./pages/SignUpPage";
 import EmailVerificationPage from "./pages/EmailVerificationPage";
 import { useAuthStore } from "./store/authStore";
+import DashboardPage from "./pages/DashboardPage";
+import LoadingSpinner from "./components/LoadingSpinner";
 
 const ProtectedRoute = ({ children }) => {
   const { isAuthenticated, user } = useAuthStore();
@@ -18,17 +20,13 @@ const ProtectedRoute = ({ children }) => {
 };
 
 const RedirectAuthenticatedUser = ({ children }) => {
-  const { isAuthenticated, user } = useAuthStore();
+	const { isAuthenticated, user } = useAuthStore();
 
-  if (isAuthenticated) {
-    return <Navigate to="/" replace />;
-  }
+	if (isAuthenticated && user.isVerified) {
+		return <Navigate to='/' replace />;
+	}
 
-  if (!user.isVerified) {
-    return <Navigate to="/verify-email" replace />;
-  }
-
-  return children;
+	return children;
 };
 
 function App() {
@@ -38,7 +36,10 @@ function App() {
     checkAuth();
   }, [checkAuth]);
 
-  console.log(isCheckingAuth, isAuthenticated, user);
+  if (isCheckingAuth) {
+    return <LoadingSpinner />;
+  }
+
   return (
     <div className='min-h-screen bg-[#fbe343] flex items-center justify-center relative overflow-hidden'>
       <FloatingShape 
@@ -92,7 +93,9 @@ function App() {
       <MouseFollower src='./images/blue-paw.png' size='w-5 h-5' />
 
       <Routes>
-        <Route path='/' element={"Home"} />
+        <Route path='/' element={<ProtectedRoute>
+          <DashboardPage />
+        </ProtectedRoute>} />
         <Route path='/signup' element={
           <RedirectAuthenticatedUser>
             <SignUpPage />

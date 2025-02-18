@@ -1,18 +1,26 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Mail, Lock, EyeOff, Eye, Loader } from 'lucide-react';
 import Input from '../components/Input';
+import { useAuthStore } from '../store/authStore';
 
 const LoginPage = () => {
-
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const navigate = useNavigate();
 
-  const handleLogin = (e) => {
+  const { login, isLoading, error } = useAuthStore();
+
+  const handleLogin = async (e) => {
     e.preventDefault();
+    try {
+      await login(email, password);
+      navigate('/');
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
@@ -45,6 +53,7 @@ const LoginPage = () => {
             <div>
               <Link to="/forgot-password" className="text-[#4764fd] text-sm hover:underline">Esqueceu a senha?</Link>
             </div>
+            {error && <p className="text-red-500 font-semibold mt-2">{error}</p>}
             <motion.button
               className="mt-5 w-full py-3 px-4 bg-[#4764fd] text-white rounded-lg font-bold
               shadow-lg hover:shadow-xl transition duration-200"
