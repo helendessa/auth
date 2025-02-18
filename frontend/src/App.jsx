@@ -8,6 +8,8 @@ import EmailVerificationPage from "./pages/EmailVerificationPage";
 import { useAuthStore } from "./store/authStore";
 import DashboardPage from "./pages/DashboardPage";
 import LoadingSpinner from "./components/LoadingSpinner";
+import ForgotPasswordPage from "./pages/ForgotPasswordPage";
+import ResetPasswordPage from "./pages/ResetPasswordPage";
 
 const ProtectedRoute = ({ children }) => {
   const { isAuthenticated, user } = useAuthStore();
@@ -43,7 +45,7 @@ function App() {
   return (
     <div className='min-h-screen bg-[#fbe343] flex items-center justify-center relative overflow-hidden'>
       <FloatingShape 
-        src='./images/blue-paw.png' 
+        src='/images/blue-paw.png' 
         size='w-64 h-64' 
         top='-5%' 
         left='10%' 
@@ -51,7 +53,7 @@ function App() {
         initialRotate={0} 
       />
       <FloatingShape 
-        src='./images/blue-paw.png' 
+        src='/images/blue-paw.png' 
         size='w-48 h-48' 
         top='40%' 
         left='20%' 
@@ -59,7 +61,7 @@ function App() {
         initialRotate={180} 
       />
       <FloatingShape 
-        src='./images/blue-paw.png' 
+        src='/images/blue-paw.png' 
         size='w-32 h-32' 
         top='60%' 
         left='40%' 
@@ -67,7 +69,7 @@ function App() {
         initialRotate={225} 
       />
        <FloatingShape 
-        src='./images/blue-paw.png' 
+        src='/images/blue-paw.png' 
         size='w-56 h-56' 
         top='20%' 
         left='70%' 
@@ -75,7 +77,7 @@ function App() {
         initialRotate={90} 
       />
       <FloatingShape 
-        src='./images/blue-paw.png' 
+        src='/images/blue-paw.png' 
         size='w-40 h-40' 
         top='80%' 
         left='85%' 
@@ -83,29 +85,61 @@ function App() {
         initialRotate={135} 
       />
       <FloatingShape 
-        src='./images/blue-paw.png' 
+        src='/images/blue-paw.png' 
         size='w-24 h-24' 
         top='75%' 
         left='5%' 
         delay={1} 
         initialRotate={45} 
       />
-      <MouseFollower src='./images/blue-paw.png' size='w-5 h-5' />
+      <MouseFollower src='/images/blue-paw.png' size='w-5 h-5' />
 
       <Routes>
-        <Route path='/' element={<ProtectedRoute>
-          <DashboardPage />
-        </ProtectedRoute>} />
-        <Route path='/signup' element={
-          <RedirectAuthenticatedUser>
-            <SignUpPage />
-          </RedirectAuthenticatedUser>
-        } />
-        <Route path='/login' element={<RedirectAuthenticatedUser>
-          <LoginPage />
-        </RedirectAuthenticatedUser>} />
-        <Route path='/verify-email' element={<EmailVerificationPage />} />
-      </Routes>
+				<Route
+					path='/'
+					element={
+						<ProtectedRoute>
+							<DashboardPage />
+						</ProtectedRoute>
+					}
+				/>
+				<Route
+					path='/signup'
+					element={
+						<RedirectAuthenticatedUser>
+							<SignUpPage />
+						</RedirectAuthenticatedUser>
+					}
+				/>
+				<Route
+					path='/login'
+					element={
+						<RedirectAuthenticatedUser>
+							<LoginPage />
+						</RedirectAuthenticatedUser>
+					}
+				/>
+				<Route path='/verify-email' element={<EmailVerificationPage />} />
+				<Route
+					path='/forgot-password'
+					element={
+						<RedirectAuthenticatedUser>
+							<ForgotPasswordPage />
+						</RedirectAuthenticatedUser>
+					}
+				/>
+
+				<Route
+					path='/reset-password/:token'
+					element={
+						<RedirectAuthenticatedUser>
+							<ResetPasswordPage />
+						</RedirectAuthenticatedUser>
+					}
+				/>
+				{/* catch all routes */}
+				<Route path='*' element={<Navigate to='/' replace />} />
+			</Routes>
     </div>
   )
 }

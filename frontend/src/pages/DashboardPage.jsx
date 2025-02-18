@@ -28,8 +28,8 @@ const DashboardPage = () => {
                     transition={{ delay: 0.2 }}
                 >
                     <h3 className='text-xl font-semibold text-[#4764fd] mb-3'>Informações do Perfil</h3>
-                    <p className='text-gray-900'>Nome: {user.name}</p>
-                    <p className='text-gray-900'>Email: {user.email}</p>
+                    <p className='text-gray-900'><span className='font-bold'>Nome:</span> {user.name}</p>
+                    <p className='text-gray-900'><span className='font-bold'>Email:</span> {user.email}</p>
                 </motion.div>
                 <motion.div
                     className='p-4 bg-yellow-100 bg-opacity-50 rounded-lg border border-gray-900'
